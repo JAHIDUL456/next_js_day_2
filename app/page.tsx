@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import axios from 'axios';
 import { GrView } from "react-icons/gr";
 import { FaRegEdit } from "react-icons/fa";
 import { MdOutlineDelete } from "react-icons/md";
@@ -33,10 +34,15 @@ export default function Home() {
     setType(endpoint);
     setCurrentPage(1); // reset page on new fetch
 
-    const response = await fetch(`https://api.fake-rest.refine.dev/${endpoint}`);
-    const result = await response.json();
-    setData(result);
-    setLoading(false);
+    try {
+      const response = await axios.get(`https://api.fake-rest.refine.dev/${endpoint}`);
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const del = (id: number) => {
